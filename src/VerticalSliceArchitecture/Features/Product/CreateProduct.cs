@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using VerticalSliceArchitecture.Common;
@@ -35,6 +36,15 @@ namespace VerticalSliceArchitecture.Features
 
                 return product.Id;
             }
+        }
+    }
+
+
+    public class CommandValidator : AbstractValidator<CreateProduct.Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(c => c.Name).NotEmpty().WithMessage("Product name is required");
         }
     }
 
