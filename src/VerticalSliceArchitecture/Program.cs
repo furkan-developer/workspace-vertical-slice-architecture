@@ -8,6 +8,8 @@ using VerticalSliceArchitecture.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var projectAssembly = typeof(Program).Assembly;
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -41,11 +43,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    cfg.RegisterServicesFromAssembly(projectAssembly);
     cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
 });
 
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
+
+builder.Services.AddAutoMapper(projectAssembly);
 
 var app = builder.Build();
 
