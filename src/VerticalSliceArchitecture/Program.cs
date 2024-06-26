@@ -1,6 +1,9 @@
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using VerticalSliceArchitecture.Common.Behaviors;
 using VerticalSliceArchitecture.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +39,13 @@ builder.Services.AddSwaggerGen(x =>
 builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseInMemoryDatabase("InMemeoryDB"));
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+});
+
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 
 var app = builder.Build();
 
