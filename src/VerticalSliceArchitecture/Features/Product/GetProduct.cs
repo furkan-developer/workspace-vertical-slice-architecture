@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using VerticalSliceArchitecture.Common;
 using VerticalSliceArchitecture.Data;
 using VerticalSliceArchitecture.Entities;
+using VerticalSliceArchitecture.Features.Exceptions;
 
 namespace VerticalSliceArchitecture.Features
 {
@@ -29,7 +30,7 @@ namespace VerticalSliceArchitecture.Features
             {
                 Product? product = await _context.Products.AsNoTracking().SingleOrDefaultAsync(p => p.Id.Equals(request.Id), cancellationToken);
                 if (product is null)
-                    throw new Exception("Product is not found correspond to specified Id value");
+                    throw new ProductNotFoundException("Product is not found correspond to specified Id value");
 
                 return new Result(product.Id, product.Name, product.Quantity);
             }
