@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,12 @@ namespace VerticalSliceArchitecture.Features
         internal sealed class QueryHandler : IRequestHandler<Query, Result>
         {
             public ApplicationDbContext _context;
+            public IMapper _mapper;
 
-            public QueryHandler(ApplicationDbContext context)
+            public QueryHandler(ApplicationDbContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<Result> Handle(Query request, CancellationToken cancellationToken)
@@ -32,7 +35,7 @@ namespace VerticalSliceArchitecture.Features
                 if (product is null)
                     throw new ProductNotFoundException("Product is not found correspond to specified Id value");
 
-                return new Result(product.Id, product.Name, product.Quantity);
+                return _mapper.Map<Result>(product);
             }
         }
     }

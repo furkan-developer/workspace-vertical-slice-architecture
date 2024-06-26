@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,19 +18,17 @@ namespace VerticalSliceArchitecture.Features
         internal sealed class CommandHandler : IRequestHandler<Command, Guid>
         {
             public ApplicationDbContext _context;
+            public IMapper _mapper;
 
-            public CommandHandler(ApplicationDbContext context)
+            public CommandHandler(ApplicationDbContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
-            public async Task<Guid> Handle(Command payload, CancellationToken cancellationToken)
+            public async Task<Guid> Handle(Command command, CancellationToken cancellationToken)
             {
-                var product = new Product()
-                {
-                    Name = payload.Name,
-                    Quantity = payload.Quantity
-                };
+                var product = _mapper.Map<Product>(command);
 
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync(cancellationToken);
